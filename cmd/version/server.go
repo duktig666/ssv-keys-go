@@ -12,9 +12,6 @@ var (
 		Use:     "version",
 		Short:   "Get version info",
 		Example: global.Config.Cli.Name + " version",
-		PreRun: func(cmd *cobra.Command, args []string) {
-
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return run()
 		},

@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/duktig666/ssv-keys-go/cmd/shares"
 	"github.com/duktig666/ssv-keys-go/cmd/version"
 	"github.com/duktig666/ssv-keys-go/common/global"
 	"github.com/duktig666/ssv-keys-go/common/initialize"
@@ -51,6 +52,7 @@ func init() {
 	initialize.InitServer(cfgFile)
 
 	rootCmd.AddCommand(version.StartCmd)
+	rootCmd.AddCommand(shares.StartCmd)
 }
 
 //Execute : apply commands
