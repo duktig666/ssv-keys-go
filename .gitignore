@@ -60,3 +60,6 @@ yarn.lock
 report.*.json
 
 go.sum
+
+ssv-key
+ssv-key.*

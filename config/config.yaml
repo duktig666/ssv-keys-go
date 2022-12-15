@@ -1,0 +1,12 @@
+server:
+  name: ssv-keys-go
+  # 全局版本输出，eg： cli: go-common version
+  version: 0.0.1
+
+cli:
+  # cli 父命令
+  name: ssv-key
+
+log:
+  level:
+    server: debug

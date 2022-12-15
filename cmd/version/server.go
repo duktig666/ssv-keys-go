@@ -2,18 +2,16 @@ package version
 
 import (
 	"fmt"
+	"github.com/duktig666/ssv-keys-go/common/global"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
-const Version = "0.0.1"
-
 var (
 	StartCmd = &cobra.Command{
 		Use:     "version",
-		Aliases: []string{"v"},
 		Short:   "Get version info",
-		Example: "ssv-key version",
+		Example: global.Config.Cli.Name + " version",
 		PreRun: func(cmd *cobra.Command, args []string) {
 
 		},
@@ -24,6 +22,6 @@ var (
 )
 
 func run() error {
-	fmt.Printf("ssv-key version: %s\n", color.GreenString(Version))
+	fmt.Printf(global.Config.Cli.Name+" version: %s\n", color.GreenString(global.Config.Server.Version))
 	return nil
 }

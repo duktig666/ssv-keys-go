@@ -7,16 +7,23 @@ package cmd
 import (
 	"fmt"
 	"github.com/duktig666/ssv-keys-go/cmd/version"
+	"github.com/duktig666/ssv-keys-go/common/global"
+	"github.com/duktig666/ssv-keys-go/common/initialize"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"os"
 )
 
+var (
+	cfgFile string
+	cliName = global.Config.Cli.Name
+)
+
 var rootCmd = &cobra.Command{
-	Use:          "ssv-key",
-	Short:        "ETH SSV Key's Golang implementation",
+	Use:          cliName,
+	Short:        cliName,
 	SilenceUsage: true,
-	Long:         `ssv-key:https://github.com/duktig666/ssv-keys-go`,
+	Long:         `https://github.com/duktig666/ssv-keys-go`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			tip()
@@ -31,15 +38,19 @@ var rootCmd = &cobra.Command{
 }
 
 func tip() {
-	usageStr := `Welcome to use ` + `ssv-key.` + ` use ` + `-h` + ` see cli`
-	usageStr1 := `You can also refer to the related content of https://github.com/qiaoshurui/couples-subtotal`
+	usageStr := `Welcome to use ` + cliName + `:` + ` use ` + `-h` + ` see cli`
+	usageStr1 := `You can also refer to the related content of https://github.com/duktig666/ssv-keys-go 的相关内容`
 	fmt.Printf("%s\n", usageStr)
 	fmt.Printf("%s\n", usageStr1)
 }
 
 func init() {
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "config/config.yaml", "config file (default is config/config.yaml)")
+
+	// init config file ...
+	initialize.InitServer(cfgFile)
+
 	rootCmd.AddCommand(version.StartCmd)
-	//rootCmd.AddCommand(api.StartCmd)
 }
 
 //Execute : apply commands

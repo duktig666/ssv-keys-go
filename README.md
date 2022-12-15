@@ -1,2 +1,2 @@
 # ssv-keys-go
-ETH SSV Keys's Golang implementation
+ETH SSV Key's Golang implementation
