@@ -89,10 +89,11 @@ set operators and operator-ids. count:4
 
 ## Support
 
-- [ChainUp](https://www.chainup.com/)
+- [ChainUpCloud](https://cloud.chainup.com)
 
 
 
 ## License
 
 Apache-2.0 license
+
