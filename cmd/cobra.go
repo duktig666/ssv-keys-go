@@ -32,7 +32,10 @@ var rootCmd = &cobra.Command{
 		}
 		return nil
 	},
-	PersistentPreRunE: func(*cobra.Command, []string) error { return nil },
+	PreRun: func(cmd *cobra.Command, args []string) {
+		// init config file ...
+		initialize.InitServer(cfgFile)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		tip()
 	},
@@ -47,9 +50,6 @@ func tip() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "config/config.yaml", "config file (default is config/config.yaml)")
-
-	// init config file ...
-	initialize.InitServer(cfgFile)
 
 	rootCmd.AddCommand(version.StartCmd)
 	rootCmd.AddCommand(shares.StartCmd)

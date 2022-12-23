@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var zapLog zap.Logger
+var zapLog *zap.Logger
 var sugarLog *zap.SugaredLogger
 
 func InitLog() {
@@ -49,6 +49,7 @@ func InitLog() {
 		panic(fmt.Sprintf("log 初始化失败: %+v", err))
 	}
 	sugarLog = zapLog.Sugar()
+	sugarLog.Level()
 }
 
 func switchLogLevel(level string) zapcore.Level {

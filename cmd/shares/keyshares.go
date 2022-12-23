@@ -10,8 +10,6 @@ import (
 	"github.com/duktig666/ssv-keys-go/ssv"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"strconv"
-	"strings"
 )
 
 func keystoreShare() (string, error) {
@@ -38,9 +36,6 @@ func keystoreShare() (string, error) {
 	}
 
 	// get operator list
-	operatorIdList := strings.Split(operatorIds, ",")
-	operatorPubkeyList := strings.Split(operatorPubkeys, ",")
-
 	if len(operatorIdList) != len(operatorPubkeyList) {
 		return "", errors.New("operator and operator-ids are inconsistent.")
 	}
@@ -49,13 +44,8 @@ func keystoreShare() (string, error) {
 	operators := make([]*ssv.Operator, 0, count)
 
 	for i := 0; i < count; i++ {
-		operatorId, err := strconv.Atoi(operatorIdList[i])
-		if err != nil {
-			return "", errors.Wrap(err, "operator-ids is not number (Comma-separated).")
-		}
-
 		operators = append(operators, &ssv.Operator{
-			Id:        operatorId,
+			Id:        int(operatorIdList[i]),
 			PublicKey: operatorPubkeyList[i],
 		})
 	}

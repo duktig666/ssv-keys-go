@@ -9,18 +9,18 @@ import (
 	"github.com/duktig666/ssv-keys-go/common/global"
 	"github.com/duktig666/ssv-keys-go/common/initialize"
 	"github.com/duktig666/ssv-keys-go/common/logger"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
 var (
-	keystorePath string
-	password     string
-	// , 间隔（可切割数组）
-	operatorPubkeys string
-	// , 间隔（可切割数组）
-	operatorIds string
-	ssvAmount   string
-	outputPath  string
+	keystorePath       string
+	password           string
+	operatorPubkeyList []string
+	operatorIdList     []uint32
+	ssvAmount          string
+	outputPath         string
+	shareCount         uint32
 )
 
 var (
@@ -35,18 +35,43 @@ var (
 )
 
 func run() error {
+	fmt.Println(color.GreenString("set operators and operator-ids. count:%v\n", shareCount))
+	operatorIdList = make([]uint32, 0, shareCount)
+	operatorPubkeyList = make([]string, 0, shareCount)
+
+	for i := uint32(0); i < shareCount; i++ {
+		var operatorId uint32
+		var operatorPubkey string
+
+		fmt.Println(color.GreenString("Set %v Operator id", i+1))
+
+		_, err := fmt.Scan(&operatorId)
+		if err != nil {
+			fmt.Println(color.RedString("Set %v Operator id err:%v\n", i+1, err))
+		}
+
+		fmt.Println(color.GreenString("Set %v Operator key", i+1))
+		_, err = fmt.Scan(&operatorPubkey)
+		if err != nil {
+			fmt.Println(color.RedString("Set %v Operator key err:%v\n", i+1, err))
+		}
+
+		operatorIdList = append(operatorIdList, operatorId)
+		operatorPubkeyList = append(operatorPubkeyList, operatorPubkey)
+	}
+
 	shareRes, err := keystoreShare()
 	if err != nil {
-		logger.Errorf("shares fail. err:%v", err)
+		fmt.Println(color.RedString("shares fail. err:%v", err))
 	}
 
 	if outputPath == "" {
-		logger.Infof("shares res:\n")
+		fmt.Println(color.GreenString("shares res"))
 		fmt.Println(shareRes)
 	} else {
 		err = output([]byte(shareRes))
 		if err != nil {
-			logger.Errorf("shares fail. err:%v", err)
+			fmt.Println(color.RedString("shares fail. err:%v", err))
 		}
 	}
 
@@ -58,14 +83,18 @@ func init() {
 	if err != nil {
 		logger.Errorf("init BLS error: %v", err)
 	}
+	logger.InitLog()
 
 	// add flags
 	StartCmd.Flags().StringVarP(&keystorePath, "keystore", "k", "", "keystore.json file path")
 	StartCmd.Flags().StringVarP(&password, "password", "p", "", "keystore password")
-	StartCmd.Flags().StringVarP(&operatorPubkeys, "operators", "o", "", "Comma-separated list of the operator keys")
-	StartCmd.Flags().StringVarP(&operatorIds, "operator-ids", "i", "", "Comma-separated list of the operator ids (same sequence as operators)")
 	StartCmd.Flags().StringVarP(&ssvAmount, "ssv-amount", "s", "", "SSV Token amount fee required for this transaction in Wei. (default:'0')")
 	StartCmd.Flags().StringVar(&outputPath, "output", "", "Result output path: (eg: ./shares.json). If not set, output to console.")
+	StartCmd.Flags().Uint32Var(&shareCount, "count", 4, "share count (default:4)")
+
+	// operators
+	//StartCmd.Flags().StringVarP(&operatorPubkeys, "operators", "o", "", "Comma-separated list of the operator keys")
+	//StartCmd.Flags().StringVarP(&operatorIds, "operator-ids", "i", "", "Comma-separated list of the operator ids (same sequence as operators)")
 
 	// set flags relation
 	err = StartCmd.MarkFlagRequired("keystore")
@@ -77,16 +106,16 @@ func init() {
 	if err != nil {
 		logger.Errorf("password is required. error: %v", err)
 	}
+	StartCmd.MarkFlagsRequiredTogether("keystore", "password")
 
-	err = StartCmd.MarkFlagRequired("operators")
-	if err != nil {
-		logger.Errorf("operators is required. error: %v", err)
-	}
+	//err = StartCmd.MarkFlagRequired("operators")
+	//if err != nil {
+	//	logger.Errorf("operators is required. error: %v", err)
+	//}
+	//
+	//err = StartCmd.MarkFlagRequired("operator-ids")
+	//if err != nil {
+	//	logger.Errorf("operator-ids is required. error: %v", err)
+	//}
 
-	err = StartCmd.MarkFlagRequired("operator-ids")
-	if err != nil {
-		logger.Errorf("operator-ids is required. error: %v", err)
-	}
-
-	StartCmd.MarkFlagsRequiredTogether("keystore", "password", "operators", "operator-ids")
 }
